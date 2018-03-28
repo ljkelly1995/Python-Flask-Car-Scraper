@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+    <head>
+        <title>Used Car Scraper (IN DEVELOPMENT)</title>
+    </head>
+    <body>
+		<b>Craigslist Scraper</b>
+        <form action="" method="post">
+            {{ form.csrf }}
+ 
+            <div class="input text">
+                {{ form.make.label }} {{ form.make }}
+				&nbsp
+				{{ form.model.label }} {{ form.model }}
+            </p>
+                {{ form.minprice.label }} {{ form.minprice }}
+            </p>
+                {{ form.maxprice.label }} {{ form.maxprice }}
+            </div>
+        </p>
+             <div class="input sortby">
+                <b> Sort by: </b> &nbsp
+                <select id ='sorting' name='sorting'>
+                    <option value = 'new' UNSELECTED> Newest </option>
+                    <option value = 'rel' UNSELECTED> Relevant </option>
+                    <option value = 'high' UNSELECTED> Highest Price </option>
+                    <option value = 'low' UNSELECTED> Lowest Price </option>
+                </select>
+            </div>
+        </p>
+            <div class="input submit">
+                <input type="submit" value="Submit" />
+            </div>
+        </form>
+        {{ table }}
+    </body>
+</html>

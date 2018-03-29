@@ -1,5 +1,5 @@
 from flask import Flask, render_template, flash, request
-from flask_table import Table, Col
+from flask_table import Table, Col, LinkCol
 from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField
 from bs4 import BeautifulSoup
 import requests
@@ -15,11 +15,14 @@ app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
 class ItemTable(Table):
     tabname = Col('Name')
     tabprice = Col('Price')
+    tablink = LinkCol('Name', 'static', anchor_attrs={'class': 'myclass'})
+
 
 class Item(object):
-    def __init__(self, tabname, tabprice):
+    def __init__(self, tabname, tabprice, tablink):
         self.tabname = tabname
         self.tabprice = tabprice
+        self.tablink = tablink
  
 class ReusableForm(Form):
     make = TextField('Make:', validators=[validators.required()])
@@ -30,7 +33,6 @@ class ReusableForm(Form):
  
 
 def Saabscrape(make, model, sorttype, minprice, maxprice):
-    #print(sorttype)
     if sorttype == 'new':
         sort = 'date'
     elif sorttype == 'old':
@@ -56,12 +58,10 @@ def Saabscrape(make, model, sorttype, minprice, maxprice):
         url2 = '&sort=' + sort + '&srchType=T'
         url3 = '&min_price=' + minprice + '&max_price=' + maxprice
         url = url1 + urlpage + urlquer + make +  '+' + model + url2 + url3
-        print(url)
         r = requests.get(url)
         data = r.text
         soup = BeautifulSoup(data, "html.parser")
         totalentries = soup.find(class_='totalcount').text
-        print(int(totalentries))
         if int(totalentries) > 120:
             currentpage += 1
         else:
@@ -69,14 +69,14 @@ def Saabscrape(make, model, sorttype, minprice, maxprice):
         for result in soup.find_all(class_='result-info'):
             carname = result.find(class_='result-title')
             price = result.find(class_='result-price')
+            link = result.find('a', href=True)
+            linktext = link['href']
             if price != None:
-                cardata.append(Item(carname.text, price.text))
-        print(len(cardata))
+                cardata.append(Item(carname.text, price.text, linktext))
     return cardata
 
 @app.route("/", methods=['GET', 'POST'])
 def hello():
-    print('start')
     form = ReusableForm(request.form)
 
     table = ''
@@ -88,7 +88,6 @@ def hello():
         minprice = request.form['minprice']
         maxprice = request.form['maxprice']
         sorttype = request.form.get('sorting')
-        print(sorttype)
         results = Saabscrape(make, model, sorttype, minprice, maxprice)
         table = ItemTable(results)
  

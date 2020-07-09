@@ -77,7 +77,7 @@ def Saabscrape(make, model, sorttype, minprice, maxprice):
     return cardata
 
 @app.route("/", methods=['GET', 'POST'])
-def hello():
+def main():
     form = ReusableForm(request.form)
 
     table = ''
@@ -92,7 +92,7 @@ def hello():
         results = Saabscrape(make, model, sorttype, minprice, maxprice)
         table = ItemTable(results)
  
-    return render_template('hello.html', form=form, table=table)
+    return render_template('main.html', form=form, table=table)
  
 if __name__ == "__main__":
     app.run()

@@ -4,6 +4,7 @@ from wtforms import Form, TextField, TextAreaField, validators, StringField, Sub
 from bs4 import BeautifulSoup
 import requests
 
+Location = "minneapolis" #Change to set search location
 
 #App config
 DEBUG = True
@@ -52,7 +53,7 @@ def Saabscrape(make, model, sorttype, minprice, maxprice):
     
     cardata = []
     while currentpage < 3: #Set number of max pages here
-        url1 = 'https://minneapolis.craigslist.org/search/sss?'
+        url1 = 'https://' + Location + '.craigslist.org/search/sss?'
         urlpage = 's=' + str(currentpage*120)
         urlquer = '&query='
         url2 = '&sort=' + sort + '&srchType=T'
